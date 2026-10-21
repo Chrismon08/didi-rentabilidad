@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Didi Rentabilidad">
+  <meta name="description" content="Calculadora personal de rentabilidad para servicios de Didi.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <title>Didi Rentabilidad</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">D</div>
+      <div>
+        <p class="eyebrow">HERRAMIENTA PERSONAL</p>
+        <h1>Didi Rentabilidad</h1>
+      </div>
+      <span class="local-pill"><span></span> Local</span>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">ANALIZADOR DE SERVICIOS</p>
+      <h2>¿Vale la pena<br>aceptar este viaje?</h2>
+      <p>Ingresa el valor, la distancia y el tiempo para evaluar la oferta en segundos.</p>
+    </section>
+
+    <section class="panel form-panel">
+      <div class="section-heading">
+        <div>
+          <h3>Evaluar servicio</h3>
+          <p>Valores en pesos colombianos (COP)</p>
+        </div>
+        <span class="icon-circle" aria-hidden="true">＋</span>
+      </div>
+      <form id="trip-form">
+        <div class="field">
+          <label for="fare">Valor ofrecido (COP)</label>
+          <div class="input-wrap money"><span>$</span><input id="fare" name="fare" type="number" min="1" step="100" placeholder="12.700" required inputmode="numeric"></div>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="km">Distancia (km)</label>
+            <div class="input-wrap"><input id="km" name="km" type="number" min="0.1" step="0.1" placeholder="2,9" required inputmode="decimal"><span class="suffix">km</span></div>
+          </div>
+          <div class="field">
+            <label for="minutes">Tiempo (min)</label>
+            <div class="input-wrap"><input id="minutes" name="minutes" type="number" min="1" step="1" placeholder="16" required inputmode="numeric"><span class="suffix">min</span></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="note">Nota (opcional)</label>
+          <input class="text-input" id="note" name="note" type="text" maxlength="80" placeholder="Ej. zona, destino o comentario">
+        </div>
+        <button class="primary-button" type="submit">Calcular rentabilidad <span aria-hidden="true">→</span></button>
+      </form>
+    </section>
+
+    <section id="result-section" class="panel result-panel hidden" aria-live="polite">
+      <div id="verdict" class="verdict mid" role="status">
+        <div class="v-cols">
+          <div><span>VALOR</span><strong id="v-fare">$0</strong></div>
+          <div><span>POR KM</span><em id="v-km-d">0 km</em><strong id="v-km">$0</strong></div>
+          <div><span>POR HORA</span><em id="v-min-d">0 min</em><strong id="v-hour">$0</strong></div>
+        </div>
+        <div id="v-text" class="v-text">—</div>
+      </div>
+      <div class="result-top">
+        <div><p class="eyebrow">RESULTADO DEL ANÁLISIS</p><h3 id="result-title">Evaluación</h3></div>
+        <span id="result-badge" class="status-badge">Calculado</span>
+      </div>
+      <div class="fare-result">
+        <span>Valor del servicio</span>
+        <strong id="result-fare">$0</strong>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card"><span>Por kilómetro</span><strong id="per-km">$0</strong><small>Ingreso bruto / km</small></div>
+        <div class="metric-card"><span>Por hora</span><strong id="per-hour">$0</strong><small>Proyección bruta</small></div>
+      </div>
+      <div class="result-details"><span id="result-distance">0 km</span><span class="dot"></span><span id="result-time">0 min</span></div>
+      <p class="helper">Es una estimación bruta: no descuenta combustible, mantenimiento, peajes ni otros gastos. La recomendación se basa en los límites que configures abajo.</p>
+      <div class="decision-buttons">
+        <button type="button" id="accept-btn" class="decision accept">✓ Aceptar</button>
+        <button type="button" id="reject-btn" class="decision reject">✕ Rechazar</button>
+      </div>
+      <p id="save-message" class="save-message"></p>
+    </section>
+
+    <section class="panel settings-panel">
+      <div class="section-heading">
+        <div><h3>Tus límites</h3><p>Personaliza cuándo una oferta te conviene.</p></div>
+        <span class="icon-circle settings-icon" aria-hidden="true">⚙</span>
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="min-km">Mínimo por km (COP)</label>
+          <input class="text-input" id="min-km" type="number" min="0" step="100" value="3000" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="min-hour">Mínimo por hora (COP)</label>
+          <input class="text-input" id="min-hour" type="number" min="0" step="1000" value="30000" inputmode="numeric">
+        </div>
+      </div>
+      <button type="button" id="save-settings" class="secondary-button">Guardar límites</button>
+      <p id="settings-message" class="settings-message"></p>
+    </section>
+
+    <section class="history-section">
+      <div class="history-heading">
+        <div><p class="eyebrow">TU ACTIVIDAD</p><h3>Historial de servicios</h3></div>
+        <button id="clear-history" class="text-button" type="button">Borrar historial</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><span>Evaluados</span><strong id="stat-count">0</strong></div>
+        <div class="stat-card"><span>Aceptados</span><strong id="stat-accepted">0</strong></div>
+        <div class="stat-card"><span>Valor aceptado</span><strong id="stat-total">$0</strong></div>
+      </div>
+      <div id="history-list" class="history-list">
+        <div class="empty-state"><div class="empty-icon">↗</div><strong>Aún no tienes servicios</strong><p>Calcula tu primera oferta y guárdala como aceptada o rechazada.</p></div>
+      </div>
+    </section>
+
+    <footer><p>Los datos se guardan en este dispositivo.</p><p>Didi Rentabilidad · Versión 1.1</p></footer>
+  </main>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
